@@ -16,8 +16,13 @@ type Portfolio = {
   website: string | null
   projects: Project[]
 }
-
-export default function Template2({ portfolio }: { portfolio: Portfolio }) {
+export default function Template1({
+  portfolio,
+  showWatermark = true,
+}: {
+  portfolio: Portfolio
+  showWatermark?: boolean
+}) {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto py-12 px-6 flex flex-col md:flex-row gap-10">
@@ -120,9 +125,22 @@ export default function Template2({ portfolio }: { portfolio: Portfolio }) {
       </div>
 
       {/* Footer */}
-      <footer className="text-center py-6 text-gray-400 text-xs">
-        Built with Portfolio SaaS
-      </footer>
+    <footer className="text-center py-8 text-gray-400 text-sm border-t">
+  {showWatermark ? (
+    <span>
+      Made with{' '}
+      <a href="https://portfolio-saas-red.vercel.app" className="underline hover:text-gray-600">
+        Portfolio SaaS
+      </a>{' '}
+      —{' '}
+      <a href="https://portfolio-saas-red.vercel.app/pricing" className="underline hover:text-gray-600">
+        Remove watermark
+      </a>
+    </span>
+  ) : (
+    <span>Built with Portfolio SaaS</span>
+  )}
+</footer>
     </main>
   )
 }

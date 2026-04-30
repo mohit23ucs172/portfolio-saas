@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { ClerkProvider, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import Link from 'next/link'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,8 +15,12 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Portfolio SaaS',
-  description: 'Create your portfolio in minutes',
+  title: {
+    default: 'Portfolio SaaS',
+    template: '%s | Portfolio SaaS',
+  },
+  description: 'Create a beautiful portfolio website in minutes. Pick a template, fill your details, go live.',
+  keywords: ['portfolio', 'website builder', 'student portfolio', 'fresher portfolio'],
 }
 
 export default function RootLayout({
@@ -27,10 +32,18 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <header className="flex justify-end items-center p-4 gap-4 h-16 border-b">
-  <SignInButton />
-  <SignUpButton />
-  <UserButton />
+          <header className="flex justify-between items-center p-4 h-16 border-b">
+  <Link href="/" className="font-bold text-lg">
+    Portfolio SaaS
+  </Link>
+  <div className="flex items-center gap-4">
+    <Link href="/pricing" className="text-sm text-gray-600 hover:text-black">
+      Pricing
+    </Link>
+    <SignInButton />
+    <SignUpButton />
+    <UserButton />
+  </div>
 </header>
           {children}
         </body>

@@ -3,6 +3,33 @@ import { notFound } from 'next/navigation'
 import Template1 from '@/components/templates/Template1'
 import Template2 from '@/components/templates/Template2'
 import Template3 from '@/components/templates/Template3'
+import type { Metadata } from 'next'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ username: string }>
+}): Promise<Metadata> {
+  const { username } = await params
+
+  const portfolio = await prisma.portfolio.findUnique({
+    where: { username },
+  })
+
+  if (!portfolio) {
+    return { title: 'Portfolio not found' }
+  }
+
+  return {
+    title: `${portfolio.name} — Portfolio`,
+    description: portfolio.bio ?? `Check out ${portfolio.name}'s portfolio.`,
+    openGraph: {
+      title: `${portfolio.name} — Portfolio`,
+      description: portfolio.bio ?? `Check out ${portfolio.name}'s portfolio.`,
+      type: 'profile',
+    },
+  }
+}
 
 export default async function PortfolioPage({
   params,
@@ -13,20 +40,23 @@ export default async function PortfolioPage({
 
   const portfolio = await prisma.portfolio.findUnique({
     where: { username },
-    include: { projects: true },
+    include: {
+      projects: true,
+      user: {
+        include: { subscription: true },
+      },
+    },
   })
 
-  if (!portfolio) {
-    notFound()
-  }
+  if (!portfolio) notFound()
 
-  if (portfolio.templateId === 'template2') {
-    return <Template2 portfolio={portfolio} />
-  }
+  const isPro =
+    portfolio.user.subscription?.plan === 'pro' &&
+    portfolio.user.subscription?.status === 'active'
 
-  if (portfolio.templateId === 'template3') {
-    return <Template3 portfolio={portfolio} />
-  }
+  const props = { portfolio, showWatermark: !isPro }
 
-  return <Template1 portfolio={portfolio} />
+  if (portfolio.templateId === 'template2') return <Template2 {...props} />
+  if (portfolio.templateId === 'template3') return <Template3 {...props} />
+  return <Template1 {...props} />
 }

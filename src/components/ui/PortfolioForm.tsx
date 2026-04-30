@@ -79,8 +79,8 @@ export default function PortfolioForm() {
       <h1 className="text-3xl font-bold">Create Your Portfolio</h1>
 
       {error && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">{error}</div>
-      )}
+  <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">{error}</div>
+)}
 
       <div className="space-y-2">
         <Label htmlFor="username">Username (your portfolio URL)</Label>
