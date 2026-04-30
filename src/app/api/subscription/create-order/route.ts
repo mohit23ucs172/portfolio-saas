@@ -1,11 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
-import Razorpay from 'razorpay'
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-})
 
 export async function POST() {
   const { userId } = await auth()
@@ -15,6 +9,13 @@ export async function POST() {
   }
 
   try {
+    const Razorpay = (await import('razorpay')).default
+
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID!,
+      key_secret: process.env.RAZORPAY_KEY_SECRET!,
+    })
+
     const order = await razorpay.orders.create({
       amount: 9900,
       currency: 'INR',
