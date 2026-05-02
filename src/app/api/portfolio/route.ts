@@ -10,7 +10,11 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { username, name, bio, skills, github, linkedin, twitter, website, projects } = body
+  const {
+  username, name, bio, skills, avatar,
+  github, linkedin, twitter, website,
+  projects, education, experience, certifications
+} = body
 
   if (!username || !name) {
     return NextResponse.json({ error: 'Username and name are required' }, { status: 400 })
@@ -26,32 +30,33 @@ export async function POST(req: NextRequest) {
     const portfolio = await prisma.portfolio.upsert({
       where: { userId: user.id },
       update: {
-        username,
-        name,
-        bio,
-        skills,
-        github,
-        linkedin,
-        twitter,
-        website,
+        username, name, bio, skills,avatar,
+        github, linkedin, twitter, website,
         projects: {
           deleteMany: {},
           create: projects ?? [],
         },
+        education: {
+          deleteMany: {},
+          create: education ?? [],
+        },
+        experience: {
+          deleteMany: {},
+          create: experience ?? [],
+        },
+        certifications: {
+          deleteMany: {},
+          create: certifications ?? [],
+        },
       },
       create: {
         userId: user.id,
-        username,
-        name,
-        bio,
-        skills,
-        github,
-        linkedin,
-        twitter,
-        website,
-        projects: {
-          create: projects ?? [],
-        },
+        username, name, bio, skills,avatar,
+        github, linkedin, twitter, website,
+        projects: { create: projects ?? [] },
+        education: { create: education ?? [] },
+        experience: { create: experience ?? [] },
+        certifications: { create: certifications ?? [] },
       },
     })
 

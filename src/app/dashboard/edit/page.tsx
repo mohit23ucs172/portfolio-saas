@@ -15,7 +15,12 @@ export default async function EditPortfolioPage() {
 
   const portfolio = await prisma.portfolio.findUnique({
     where: { userId: user.id },
-    include: { projects: true },
+    include: {
+      projects: true,
+      education: true,
+      experience: true,
+      certifications: true,
+    },
   })
 
   if (!portfolio) redirect('/dashboard/create')

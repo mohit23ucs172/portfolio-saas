@@ -42,6 +42,9 @@ export default async function PortfolioPage({
     where: { username },
     include: {
       projects: true,
+      education: true,
+      experience: true,
+      certifications: true,
       user: {
         include: { subscription: true },
       },
@@ -54,7 +57,16 @@ export default async function PortfolioPage({
     portfolio.user.subscription?.plan === 'pro' &&
     portfolio.user.subscription?.status === 'active'
 
-  const props = { portfolio, showWatermark: !isPro }
+  const props = {
+    portfolio: {
+      ...portfolio,
+      experience: portfolio.experience ?? [],
+      education: portfolio.education ?? [],
+      certifications: portfolio.certifications ?? [],
+      projects: portfolio.projects ?? [],
+    },
+    showWatermark: !isPro,
+  }
 
   if (portfolio.templateId === 'template2') return <Template2 {...props} />
   if (portfolio.templateId === 'template3') return <Template3 {...props} />
