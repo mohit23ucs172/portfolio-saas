@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { getUserSubscriptionStatus } from '@/lib/subscription'
 
 export default async function DashboardPage() {
   const { userId } = await auth()
@@ -29,6 +30,8 @@ export default async function DashboardPage() {
       certifications: true,
     },
   })
+
+  const subStatus = await getUserSubscriptionStatus(userId)
 
   const subscription = await prisma.subscription.findUnique({
     where: { userId: user.id },
@@ -97,25 +100,31 @@ export default async function DashboardPage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              {isPro ? (
-                <span className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-black px-4 py-2 rounded-full shadow-sm">
-                  ⭐ PRO MEMBER
-                </span>
-              ) : (
-                <Link href="/pricing">
-                  <Button variant="outline" size="sm" className="text-xs">
-                    Upgrade to Pro ⭐
-                  </Button>
-                </Link>
-              )}
-              {portfolio && (
-                <Link href={`/${portfolio.username}`} target="_blank">
-                  <Button size="sm" className="text-xs bg-black hover:bg-gray-800">
-                    View Portfolio →
-                  </Button>
-                </Link>
-              )}
-            </div>
+  {subStatus.plan === 'pro' ? (
+    <span className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-black px-4 py-2 rounded-full shadow-sm">
+      ⭐ PRO — {subStatus.daysRemaining} days left
+    </span>
+  ) : subStatus.isTrialExpired ? (
+    <Link href="/pricing">
+      <span className="flex items-center gap-2 bg-red-500 text-white text-xs font-black px-4 py-2 rounded-full shadow-sm animate-pulse">
+        ⚠️ Trial Expired — Upgrade Now
+      </span>
+    </Link>
+  ) : (
+    <Link href="/pricing">
+      <span className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-black px-4 py-2 rounded-full shadow-sm">
+        🕐 {subStatus.daysRemaining} days trial left
+      </span>
+    </Link>
+  )}
+  {portfolio && (
+    <Link href={`/${portfolio.username}`} target="_blank">
+      <Button size="sm" className="text-xs bg-black hover:bg-gray-800">
+        View Portfolio →
+      </Button>
+    </Link>
+  )}
+</div>
           </div>
         </div>
       </div>
