@@ -19,13 +19,13 @@ export default async function PricingPage() {
 const plans = [
   {
     id: 'free',
-    name: 'Free',
+    name: 'Trial',
     price: '₹0',
-    period: 'forever',
+    period: '10 days free',
     features: [
       '1 portfolio',
       'All 3 templates',
-      'Platform subdomain',
+      'Live portfolio link',
       'Portfolio SaaS watermark',
     ],
     cta: 'Current Plan',
@@ -40,14 +40,13 @@ const plans = [
       '1 portfolio',
       'All 3 templates',
       'No watermark',
+      'Portfolio stays live',
       'Priority support',
-      'Custom domain (coming soon)',
     ],
     cta: 'Upgrade to Pro',
     disabled: false,
   },
 ]
-
   return (
     <main className="max-w-4xl mx-auto py-8 md:py-16 px-4 md:px-8">
       <div className="text-center mb-12">
