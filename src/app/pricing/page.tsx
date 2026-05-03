@@ -16,36 +16,37 @@ export default async function PricingPage() {
     currentPlan = user?.subscription?.plan ?? 'free'
   }
 
-  const plans = [
-    {
-      id: 'free',
-      name: 'Free',
-      price: '₹0',
-      period: 'forever',
-      features: [
-        '1 portfolio',
-        'Classic Dark template only',
-        'Platform subdomain',
-        'Portfolio SaaS watermark',
-      ],
-      cta: 'Current Plan',
-      disabled: true,
-    },
-    {
-      id: 'pro',
-      name: 'Pro',
-      price: '₹99',
-      period: 'per month',
-      features: [
-        '1 portfolio',
-        'All 3 templates',
-        'No watermark',
-        'Priority support',
-      ],
-      cta: 'Upgrade to Pro',
-      disabled: false,
-    },
-  ]
+const plans = [
+  {
+    id: 'free',
+    name: 'Free',
+    price: '₹0',
+    period: 'forever',
+    features: [
+      '1 portfolio',
+      'All 3 templates',
+      'Platform subdomain',
+      'Portfolio SaaS watermark',
+    ],
+    cta: 'Current Plan',
+    disabled: true,
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    price: '₹99',
+    period: 'per month',
+    features: [
+      '1 portfolio',
+      'All 3 templates',
+      'No watermark',
+      'Priority support',
+      'Custom domain (coming soon)',
+    ],
+    cta: 'Upgrade to Pro',
+    disabled: false,
+  },
+]
 
   return (
     <main className="max-w-4xl mx-auto py-16 px-8">

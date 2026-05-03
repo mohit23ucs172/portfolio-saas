@@ -28,10 +28,10 @@ const subscription = await prisma.subscription.findUnique({
   where: { userId: user.id },
 })
 const isPro = subscription?.plan === 'pro' && subscription?.status === 'active'
-  const templates = [
+ const templates = [
   { id: 'template1', label: 'Classic Dark', free: true },
-  { id: 'template2', label: 'Minimal Sidebar', free: false },
-  { id: 'template3', label: 'Modern Gradient', free: false },
+  { id: 'template2', label: 'Minimal Sidebar', free: true },
+  { id: 'template3', label: 'Modern Gradient', free: true },
 ]
 
   return (
@@ -73,7 +73,7 @@ const isPro = subscription?.plan === 'pro' && subscription?.status === 'active'
           <div className="border rounded-lg p-6">
             <h2 className="text-xl font-semibold mb-4">Choose Template</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {templates.map((t) => (
+            {templates.map((t) => (
   <div
     key={t.id}
     className={`border-2 rounded-lg p-4 text-center ${
@@ -82,16 +82,9 @@ const isPro = subscription?.plan === 'pro' && subscription?.status === 'active'
         : 'border-gray-200'
     }`}
   >
-    <p className="font-medium mb-1">{t.label}</p>
-    {!t.free && !isPro && (
-      <p className="text-xs text-yellow-600 mb-2">⭐ Pro only</p>
-    )}
+    <p className="font-medium mb-2">{t.label}</p>
     {portfolio.templateId === t.id ? (
       <span className="text-xs text-green-600 font-medium">Active</span>
-    ) : !t.free && !isPro ? (
-      <Link href="/pricing">
-        <Button variant="outline" size="sm">Upgrade</Button>
-      </Link>
     ) : (
       <Link href={`/dashboard/template?id=${t.id}`}>
         <Button variant="outline" size="sm">Use This</Button>
