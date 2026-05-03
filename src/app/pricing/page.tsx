@@ -49,7 +49,7 @@ const plans = [
 ]
 
   return (
-    <main className="max-w-4xl mx-auto py-16 px-8">
+    <main className="max-w-4xl mx-auto py-8 md:py-16 px-4 md:px-8">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Simple Pricing</h1>
         <p className="text-gray-500 text-lg">

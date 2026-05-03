@@ -32,12 +32,12 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <header className="flex justify-between items-center p-4 h-16 border-b">
-  <Link href="/" className="font-bold text-lg">
+          <header className="flex justify-between items-center px-4 md:px-8 h-16 border-b bg-white">
+  <Link href="/" className="font-black text-sm md:text-base">
     Portfolio SaaS
   </Link>
-  <div className="flex items-center gap-4">
-    <Link href="/pricing" className="text-sm text-gray-600 hover:text-black">
+  <div className="flex items-center gap-2 md:gap-4">
+    <Link href="/pricing" className="text-xs md:text-sm text-gray-600 hover:text-black hidden sm:block">
       Pricing
     </Link>
     <SignInButton />

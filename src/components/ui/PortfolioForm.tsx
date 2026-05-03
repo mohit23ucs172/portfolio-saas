@@ -79,7 +79,7 @@ export default function PortfolioForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto p-8">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto p-4 md:p-8">
       <h1 className="text-3xl font-bold">Create Your Portfolio</h1>
 
       {error && (
