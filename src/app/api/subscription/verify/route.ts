@@ -1,8 +1,10 @@
+export const dynamic = 'force-dynamic'
+
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
-export const dynamic = 'force-dynamic'
+
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
 
@@ -23,6 +25,31 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Capture the payment
+    const keyId = process.env.RAZORPAY_KEY_ID
+    const keySecret = process.env.RAZORPAY_KEY_SECRET
+    const credentials = Buffer.from(`${keyId}:${keySecret}`).toString('base64')
+
+    const captureResponse = await fetch(
+      `https://api.razorpay.com/v1/payments/${razorpay_payment_id}/capture`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${credentials}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount: 9900, currency: 'INR' }),
+      }
+    )
+
+    const captureData = await captureResponse.json()
+    console.log('Capture response:', captureData)
+
+    if (!captureResponse.ok && captureData.error?.code !== 'BAD_REQUEST_ERROR') {
+      return NextResponse.json({ error: 'Payment capture failed' }, { status: 500 })
+    }
+
+    // Update subscription in DB
     const user = await prisma.user.findUnique({ where: { clerkId: userId } })
 
     if (!user) {
@@ -47,6 +74,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error(error)
-    return NextResponse.json({ error: 'Failed to update subscription' }, { status: 500 })
+    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 })
   }
 }
