@@ -288,6 +288,29 @@ export default async function DashboardPage() {
         )}
 
       </div>
+      
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 bg-white mt-16 py-8">
+        <div className="max-w-6xl mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center text-white text-xs font-black">
+              P
+            </div>
+            <span className="font-black text-gray-900 text-sm">Portfolio SaaS</span>
+          </div>
+          <div className="flex items-center gap-6 text-xs text-gray-400">
+            <Link href="/pricing" className="hover:text-black transition-colors">Pricing</Link>
+            <Link href="/dashboard/create" className="hover:text-black transition-colors">Create Portfolio</Link>
+            <Link href="/dashboard/edit" className="hover:text-black transition-colors">Edit Portfolio</Link>
+          </div>
+          <p className="text-xs text-gray-400">
+            © 2025 Portfolio SaaS. All rights reserved.
+          </p>
+        </div>
+      </footer>
+
     </main>
   )
 }
+  
