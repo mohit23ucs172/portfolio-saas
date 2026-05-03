@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Template1 from '@/components/templates/Template1'
 import Template2 from '@/components/templates/Template2'
 import Template3 from '@/components/templates/Template3'
@@ -53,13 +53,26 @@ export default async function PortfolioPage({
 
   if (!portfolio) notFound()
 
-  const isPro =
-    portfolio.user.subscription?.plan === 'pro' &&
-    portfolio.user.subscription?.status === 'active'
+  // Check trial/subscription status
+  const createdAt = portfolio.createdAt
+  const trialEndDate = new Date(createdAt.getTime() + 10 * 24 * 60 * 60 * 1000)
+  const now = new Date()
+  const isTrialExpired = now > trialEndDate
+
+  const subscription = portfolio.user.subscription
+  const isPro = subscription?.plan === 'pro' &&
+    subscription?.status === 'active' &&
+    (!subscription?.expiresAt || subscription.expiresAt > now)
+
+  // Redirect to expired page if trial over and not pro
+  if (isTrialExpired && !isPro) {
+    redirect(`/${username}/expired`)
+  }
 
   const props = {
     portfolio: {
       ...portfolio,
+      avatar: portfolio.avatar ?? null,
       experience: portfolio.experience ?? [],
       education: portfolio.education ?? [],
       certifications: portfolio.certifications ?? [],

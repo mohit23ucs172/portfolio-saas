@@ -56,20 +56,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    await prisma.subscription.upsert({
-      where: { userId: user.id },
-      update: {
-        plan: 'pro',
-        status: 'active',
-        razorpaySubscriptionId: razorpay_payment_id,
-      },
-      create: {
-        userId: user.id,
-        plan: 'pro',
-        status: 'active',
-        razorpaySubscriptionId: razorpay_payment_id,
-      },
-    })
+  const expiresAt = new Date()
+expiresAt.setDate(expiresAt.getDate() + 30)
+
+await prisma.subscription.upsert({
+  where: { userId: user.id },
+  update: {
+    plan: 'pro',
+    status: 'active',
+    razorpaySubscriptionId: razorpay_payment_id,
+    expiresAt,
+  },
+  create: {
+    userId: user.id,
+    plan: 'pro',
+    status: 'active',
+    razorpaySubscriptionId: razorpay_payment_id,
+    expiresAt,
+  },
+})
 
     return NextResponse.json({ success: true })
   } catch (error) {
