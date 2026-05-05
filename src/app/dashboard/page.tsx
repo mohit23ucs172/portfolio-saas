@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { getUserSubscriptionStatus } from '@/lib/subscription'
 
+
 export default async function DashboardPage() {
   const { userId } = await auth()
   if (!userId) redirect('/')
@@ -30,6 +31,7 @@ export default async function DashboardPage() {
       certifications: true,
     },
   })
+if (!portfolio) redirect('/onboarding')
 
   const subStatus = await getUserSubscriptionStatus(userId)
 

@@ -8,16 +8,89 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import AvatarUpload from '@/components/AvatarUpload'
 
-export default function PortfolioForm() {
+const professionData: Record<string, {
+  skills: string[]
+  skillPlaceholder: string
+  bioPlaceholder: string
+  projectLabel: string
+  projectPlaceholder: string
+}> = {
+  developer: {
+    skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'Git', 'Docker'],
+    skillPlaceholder: 'React, Node.js, Python, TypeScript...',
+    bioPlaceholder: 'Full stack developer passionate about building scalable web applications...',
+    projectLabel: 'Projects',
+    projectPlaceholder: 'E-commerce platform, REST API, Mobile App...',
+  },
+  designer: {
+    skills: ['Figma', 'Adobe XD', 'Photoshop', 'Illustrator', 'After Effects'],
+    skillPlaceholder: 'Figma, Adobe XD, Photoshop, Illustrator...',
+    bioPlaceholder: 'Creative designer specializing in UI/UX and brand identity...',
+    projectLabel: 'Design Work',
+    projectPlaceholder: 'Brand redesign, Mobile app UI, Logo design...',
+  },
+  video: {
+    skills: ['Premiere Pro', 'After Effects', 'DaVinci Resolve', 'Final Cut Pro', 'Motion Graphics'],
+    skillPlaceholder: 'Premiere Pro, After Effects, DaVinci Resolve...',
+    bioPlaceholder: 'Video editor specializing in cinematic storytelling and motion graphics...',
+    projectLabel: 'Video Projects',
+    projectPlaceholder: 'YouTube series, Brand commercial, Short film...',
+  },
+  photographer: {
+    skills: ['Lightroom', 'Photoshop', 'Capture One', 'Portrait Photography', 'Studio Lighting'],
+    skillPlaceholder: 'Lightroom, Photoshop, Portrait, Commercial...',
+    bioPlaceholder: 'Photographer capturing authentic moments and telling visual stories...',
+    projectLabel: 'Photography Projects',
+    projectPlaceholder: 'Wedding shoot, Brand campaign, Portrait series...',
+  },
+  writer: {
+    skills: ['SEO', 'Copywriting', 'Content Strategy', 'WordPress', 'Email Marketing'],
+    skillPlaceholder: 'SEO, Copywriting, Content Strategy, WordPress...',
+    bioPlaceholder: 'Content writer helping brands tell their story through compelling copy...',
+    projectLabel: 'Writing Samples',
+    projectPlaceholder: 'Blog series, Brand campaign copy, Technical documentation...',
+  },
+  data: {
+    skills: ['Python', 'SQL', 'Tableau', 'Power BI', 'Excel', 'Machine Learning'],
+    skillPlaceholder: 'Python, SQL, Tableau, Power BI, Machine Learning...',
+    bioPlaceholder: 'Data analyst turning complex datasets into actionable business insights...',
+    projectLabel: 'Case Studies',
+    projectPlaceholder: 'Sales dashboard, Customer churn analysis, ML model...',
+  },
+  product: {
+    skills: ['Product Strategy', 'Agile', 'Jira', 'Figma', 'Analytics', 'Roadmapping'],
+    skillPlaceholder: 'Product Strategy, Agile, Jira, Analytics...',
+    bioPlaceholder: 'Product manager driving user-centric solutions and business growth...',
+    projectLabel: 'Product Launches',
+    projectPlaceholder: 'Feature launch, Growth initiative, Product redesign...',
+  },
+  other: {
+    skills: [],
+    skillPlaceholder: 'Add your skills...',
+    bioPlaceholder: 'Tell the world about yourself and what you do...',
+    projectLabel: 'Projects',
+    projectPlaceholder: 'Your best work...',
+  },
+}
+
+export default function PortfolioForm({ profession = 'other' }: { profession?: string }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [avatar, setAvatar] = useState('')
 
-  const [form, setForm] = useState({
-    username: '', name: '', bio: '', skills: '',
-    github: '', linkedin: '', twitter: '', website: '',
-  })
+const data = professionData[profession] ?? professionData.other
+
+const [form, setForm] = useState({
+  username: '',
+  name: '',
+  bio: '',
+  skills: data.skills.join(', '),
+  github: '',
+  linkedin: '',
+  twitter: '',
+  website: '',
+})
 
   const [projects, setProjects] = useState([
     { title: '', description: '', link: '', github: '' }
@@ -116,7 +189,12 @@ export default function PortfolioForm() {
 
         <div className="space-y-2">
           <Label>Skills (comma separated)</Label>
-          <Input name="skills" placeholder="React, Node.js, Python" value={form.skills} onChange={handleChange} />
+         <Input
+  name="skills"
+  placeholder={data.skillPlaceholder}
+  value={form.skills}
+  onChange={handleChange}
+/>
         </div>
       </div>
 
@@ -192,10 +270,10 @@ export default function PortfolioForm() {
 
       {/* Projects */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold border-b pb-2">Projects</h2>
+      <h2 className="text-lg font-semibold border-b pb-2">{data.projectLabel}</h2>
         {projects.map((project, index) => (
           <div key={index} className="border rounded-lg p-4 space-y-2">
-            <Input placeholder="Project Title" value={project.title} onChange={e => handleListChange(projects, setProjects, index, 'title', e.target.value)} />
+            <Input placeholder={index === 0 ? data.projectPlaceholder : 'Project Title'} value={project.title} onChange={e => handleListChange(projects, setProjects, index, 'title', e.target.value)} />
             <Textarea placeholder="Project Description" value={project.description} onChange={e => handleListChange(projects, setProjects, index, 'description', e.target.value)} />
             <Input placeholder="Live Link" value={project.link} onChange={e => handleListChange(projects, setProjects, index, 'link', e.target.value)} />
             <Input placeholder="GitHub Link" value={project.github} onChange={e => handleListChange(projects, setProjects, index, 'github', e.target.value)} />
