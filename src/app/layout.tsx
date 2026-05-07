@@ -23,19 +23,36 @@ export const metadata: Metadata = {
   keywords: ['portfolio', 'website builder', 'student portfolio', 'fresher portfolio'],
 }
 
+// export default function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode
+// }) {
+//   return (
+//     <ClerkProvider>
+//       <html lang="en">
+//         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+//           <Navbar />
+//           {children}
+//         </body>
+//       </html>
+//     </ClerkProvider>
+//   )
+// }
+
+import { GoogleAnalytics } from '@next/third-parties/google'
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <Navbar />
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body>
+        {children}
+        <GoogleAnalytics gaId="G-LWC181BMV5" />
+      </body>
+    </html>
   )
 }

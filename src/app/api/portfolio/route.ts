@@ -10,10 +10,11 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const {
+ const {
   username, name, bio, skills, avatar,
   github, linkedin, twitter, website,
-  projects, education, experience, certifications
+  projects, education, experience, certifications,
+  profession,
 } = body
 
   if (!username || !name) {
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     const portfolio = await prisma.portfolio.upsert({
       where: { userId: user.id },
       update: {
-        username, name, bio, skills,avatar,
+        username, name, bio, skills,avatar,profession,
         github, linkedin, twitter, website,
         projects: {
           deleteMany: {},
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
       },
       create: {
         userId: user.id,
-        username, name, bio, skills,avatar,
+        username, name, bio, skills,avatar,profession,
         github, linkedin, twitter, website,
         projects: { create: projects ?? [] },
         education: { create: education ?? [] },

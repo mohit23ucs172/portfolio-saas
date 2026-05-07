@@ -23,7 +23,8 @@ model Portfolio {
   userId         String          @unique
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   username       String          @unique
-  templateId     String          @default("template1")
+templateId     String          @default("template1")
+profession     String          @default("developer")
   name           String
   bio            String?
   avatar         String?

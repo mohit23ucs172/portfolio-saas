@@ -131,6 +131,7 @@ const [form, setForm] = useState({
       body: JSON.stringify({
         ...form,
         avatar,
+        profession,
         skills: form.skills.split(',').map(s => s.trim()).filter(Boolean),
         projects: projects.filter(p => p.title.trim() !== ''),
         education: education.filter(e => e.college.trim() !== ''),
