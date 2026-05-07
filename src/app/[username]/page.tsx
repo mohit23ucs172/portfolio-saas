@@ -4,7 +4,9 @@ import Template1 from '@/components/templates/Template1'
 import Template2 from '@/components/templates/Template2'
 import Template3 from '@/components/templates/Template3'
 import type { Metadata } from 'next'
-
+import TemplateCreative from '@/components/templates/TemplateCreative'
+import TemplateWords from '@/components/templates/TemplateWords'
+import TemplateVideo from '@/components/templates/TemplateVideo'
 export async function generateMetadata({
   params,
 }: {
@@ -81,7 +83,13 @@ export default async function PortfolioPage({
     showWatermark: !isPro,
   }
 
-  if (portfolio.templateId === 'template2') return <Template2 {...props} />
-  if (portfolio.templateId === 'template3') return <Template3 {...props} />
-  return <Template1 {...props} />
+const profession = portfolio.profession ?? 'developer'
+if (profession === 'video') return <TemplateVideo {...props} />
+if (profession === 'designer' || profession === 'photographer') return <TemplateCreative {...props} />
+if (profession === 'writer' || profession === 'other') return <TemplateWords {...props} />
+
+// Tech professions use templateId
+if (portfolio.templateId === 'template2') return <Template2 {...props} />
+if (portfolio.templateId === 'template3') return <Template3 {...props} />
+return <Template1 {...props} />
 }
