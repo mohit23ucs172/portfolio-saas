@@ -22,6 +22,26 @@ export const metadata: Metadata = {
   description: 'Create a beautiful portfolio website in minutes. Pick a template, fill your details, go live.',
   keywords: ['portfolio', 'website builder', 'student portfolio', 'fresher portfolio'],
 }
+import { GoogleAnalytics } from '@next/third-parties/google'
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <Navbar />
+          {children}
+ <GoogleAnalytics gaId="G-LWC181BMV5" />
+        </body>
+      </html>
+    </ClerkProvider>
+  )
+}
+
+
 
 // export default function RootLayout({
 //   children,
@@ -29,30 +49,11 @@ export const metadata: Metadata = {
 //   children: React.ReactNode
 // }) {
 //   return (
-//     <ClerkProvider>
-//       <html lang="en">
-//         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-//           <Navbar />
-//           {children}
-//         </body>
-//       </html>
-//     </ClerkProvider>
+//     <html lang="en">
+//       <body>
+//         {children}
+//         <GoogleAnalytics gaId="G-LWC181BMV5" />
+//       </body>
+//     </html>
 //   )
 // }
-
-import { GoogleAnalytics } from '@next/third-parties/google'
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  return (
-    <html lang="en">
-      <body>
-        {children}
-        <GoogleAnalytics gaId="G-LWC181BMV5" />
-      </body>
-    </html>
-  )
-}

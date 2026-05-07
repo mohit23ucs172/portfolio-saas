@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { getUserSubscriptionStatus } from '@/lib/subscription'
-
+import Navbar from '@/components/Navbar'
 
 export default async function DashboardPage() {
   const { userId } = await auth()
