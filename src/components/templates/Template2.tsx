@@ -1623,3 +1623,1093 @@ export default function Template2({
     </main>
   )
 }
+// 'use client'
+ 
+// import { useEffect, useRef, useState, useCallback } from 'react'
+// import {
+//   motion,
+//   useInView,
+//   useScroll,
+//   useTransform,
+//   useSpring,
+//   useMotionValue,
+//   AnimatePresence,
+// } from 'framer-motion'
+ 
+// // ============================================================
+// // TYPES
+// // ============================================================
+// type Project = { id: string; title: string; description: string | null; link: string | null; github: string | null }
+// type Education = { id: string; college: string; degree: string; year: string | null }
+// type Experience = { id: string; company: string; role: string; duration: string | null; description: string | null }
+// type Certification = { id: string; name: string; issuer: string | null; link: string | null }
+// type Portfolio = {
+//   name: string; bio: string | null; avatar: string | null; skills: string[]
+//   github: string | null; linkedin: string | null; twitter: string | null; website: string | null
+//   projects: Project[]; education: Education[]; experience: Experience[]; certifications: Certification[]
+// }
+ 
+// // ============================================================
+// // DESIGN TOKENS — Architectural Monochrome + Electric Violet
+// // ============================================================
+// const INK    = '#0a0a0a'
+// const PAPER  = '#f4f1eb'
+// const MUTED  = '#8a8680'
+// const VIOLET = '#5b21b6'
+// const VIOLET_LT = '#7c3aed'
+// const CREAM  = '#ede8df'
+// const RULE   = 'rgba(10,10,10,0.1)'
+ 
+// // ============================================================
+// // MAGNETIC BUTTON — follows cursor within proximity
+// // ============================================================
+// function MagneticButton({ children, className = '', style = {}, href, target }: {
+//   children: React.ReactNode; className?: string; style?: React.CSSProperties
+//   href?: string; target?: string
+// }) {
+//   const ref = useRef<HTMLElement>(null)
+//   const x = useMotionValue(0)
+//   const y = useMotionValue(0)
+//   const sx = useSpring(x, { stiffness: 200, damping: 18 })
+//   const sy = useSpring(y, { stiffness: 200, damping: 18 })
+ 
+//   const handleMouseMove = (e: React.MouseEvent) => {
+//     if (!ref.current) return
+//     const rect = ref.current.getBoundingClientRect()
+//     const cx = rect.left + rect.width / 2
+//     const cy = rect.top + rect.height / 2
+//     x.set((e.clientX - cx) * 0.35)
+//     y.set((e.clientY - cy) * 0.35)
+//   }
+//   const handleMouseLeave = () => { x.set(0); y.set(0) }
+ 
+//   const Tag = href ? motion.a : motion.div
+//   return (
+//     <Tag
+//       ref={ref as any}
+//       href={href}
+//       target={target}
+//       onMouseMove={handleMouseMove}
+//       onMouseLeave={handleMouseLeave}
+//       style={{ ...style, x: sx, y: sy }}
+//       className={className}
+//       whileTap={{ scale: 0.96 }}
+//     >
+//       {children}
+//     </Tag>
+//   )
+// }
+ 
+// // ============================================================
+// // MARQUEE TICKER — skills strip
+// // ============================================================
+// function Marquee({ items }: { items: string[] }) {
+//   const doubled = [...items, ...items]
+//   return (
+//     <div className="overflow-hidden" style={{ borderTop: `1px solid ${RULE}`, borderBottom: `1px solid ${RULE}` }}>
+//       <motion.div
+//         className="flex gap-0 whitespace-nowrap"
+//         animate={{ x: ['0%', '-50%'] }}
+//         transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+//         style={{ willChange: 'transform' }}
+//       >
+//         {doubled.map((item, i) => (
+//           <span
+//             key={i}
+//             className="inline-flex items-center gap-4 px-8 py-3 text-xs font-black uppercase tracking-widest"
+//             style={{ color: MUTED, borderRight: `1px solid ${RULE}` }}
+//           >
+//             <span style={{ color: VIOLET, fontSize: 8 }}>◆</span>
+//             {item}
+//           </span>
+//         ))}
+//       </motion.div>
+//     </div>
+//   )
+// }
+ 
+// // ============================================================
+// // REVEAL — editorial slide-up
+// // ============================================================
+// function Reveal({ children, delay = 0, direction = 'up' }: {
+//   children: React.ReactNode; delay?: number; direction?: 'up' | 'left' | 'right'
+// }) {
+//   const ref = useRef(null)
+//   const inView = useInView(ref, { once: true, margin: '-60px' })
+//   const initial = direction === 'up' ? { y: 48 } : direction === 'left' ? { x: -48 } : { x: 48 }
+//   return (
+//     <motion.div
+//       ref={ref}
+//       initial={{ opacity: 0, ...initial }}
+//       animate={inView ? { opacity: 1, x: 0, y: 0 } : {}}
+//       transition={{ duration: 0.75, delay, ease: [0.16, 1, 0.3, 1] }}
+//     >
+//       {children}
+//     </motion.div>
+//   )
+// }
+ 
+// // ============================================================
+// // OVERLINE LABEL
+// // ============================================================
+// function Overline({ children, accent = false }: { children: React.ReactNode; accent?: boolean }) {
+//   return (
+//     <div className="flex items-center gap-3 mb-5">
+//       <div className="w-8 h-px" style={{ background: accent ? VIOLET : INK }} />
+//       <p
+//         className="text-xs font-black uppercase tracking-[0.25em]"
+//         style={{ color: accent ? VIOLET : MUTED }}
+//       >
+//         {children}
+//       </p>
+//     </div>
+//   )
+// }
+ 
+// // ============================================================
+// // SPOTLIGHT CARD — radial gradient follows mouse
+// // ============================================================
+// function SpotlightCard({ children, className = '', dark = false }: {
+//   children: React.ReactNode; className?: string; dark?: boolean
+// }) {
+//   const ref = useRef<HTMLDivElement>(null)
+//   const [pos, setPos] = useState({ x: 0, y: 0 })
+//   const [hov, setHov] = useState(false)
+ 
+//   const onMove = (e: React.MouseEvent) => {
+//     if (!ref.current) return
+//     const r = ref.current.getBoundingClientRect()
+//     setPos({ x: e.clientX - r.left, y: e.clientY - r.top })
+//   }
+ 
+//   const bg = dark ? INK : PAPER
+//   const spotColor = dark ? 'rgba(124,58,237,0.15)' : 'rgba(91,33,182,0.06)'
+//   const border = dark ? 'rgba(255,255,255,0.07)' : RULE
+ 
+//   return (
+//     <div
+//       ref={ref}
+//       onMouseMove={onMove}
+//       onMouseEnter={() => setHov(true)}
+//       onMouseLeave={() => setHov(false)}
+//       className={`relative overflow-hidden ${className}`}
+//       style={{ background: bg, border: `1px solid ${border}`, borderRadius: 20 }}
+//     >
+//       {hov && (
+//         <div
+//           className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+//           style={{
+//             background: `radial-gradient(280px circle at ${pos.x}px ${pos.y}px, ${spotColor}, transparent 70%)`,
+//           }}
+//         />
+//       )}
+//       {children}
+//     </div>
+//   )
+// }
+ 
+// // ============================================================
+// // SCROLL PROGRESS
+// // ============================================================
+// function ScrollProgress() {
+//   const { scrollYProgress } = useScroll()
+//   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30 })
+//   return (
+//     <motion.div
+//       className="fixed top-0 left-0 right-0 h-[2px] z-[9998] origin-left"
+//       style={{ scaleX, background: VIOLET }}
+//     />
+//   )
+// }
+ 
+// // ============================================================
+// // CUSTOM CURSOR — minimal crosshair
+// // ============================================================
+// function CustomCursor() {
+//   const mx = useMotionValue(-100)
+//   const my = useMotionValue(-100)
+//   const lx = useSpring(mx, { stiffness: 600, damping: 35 })
+//   const ly = useSpring(my, { stiffness: 600, damping: 35 })
+//   const [vis, setVis] = useState(false)
+//   const [hov, setHov] = useState(false)
+ 
+//   useEffect(() => {
+//     const m = (e: MouseEvent) => { mx.set(e.clientX); my.set(e.clientY); setVis(true) }
+//     const over = (e: MouseEvent) => {
+//       const t = e.target as HTMLElement
+//       setHov(!!(t.closest('a') || t.closest('button') || t.closest('[data-hover]')))
+//     }
+//     window.addEventListener('mousemove', m)
+//     window.addEventListener('mouseover', over)
+//     return () => { window.removeEventListener('mousemove', m); window.removeEventListener('mouseover', over) }
+//   }, [])
+ 
+//   return (
+//     <>
+//       {/* Outer ring */}
+//       <motion.div
+//         className="fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block rounded-full"
+//         style={{
+//           x: lx, y: ly,
+//           translateX: '-50%', translateY: '-50%',
+//           opacity: vis ? 1 : 0,
+//           width: hov ? 48 : 32, height: hov ? 48 : 32,
+//           border: `1.5px solid ${INK}`,
+//           transition: 'width 0.2s, height 0.2s, opacity 0.2s',
+//           mixBlendMode: 'multiply',
+//         }}
+//       />
+//       {/* Dot */}
+//       <motion.div
+//         className="fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block rounded-full"
+//         style={{
+//           x: mx, y: my,
+//           translateX: '-50%', translateY: '-50%',
+//           width: 5, height: 5,
+//           background: INK,
+//           opacity: vis ? 1 : 0,
+//           mixBlendMode: 'multiply',
+//         }}
+//       />
+//     </>
+//   )
+// }
+ 
+// // ============================================================
+// // SECTION DIVIDER
+// // ============================================================
+// function Divider({ label }: { label: string }) {
+//   return (
+//     <div className="flex items-center gap-4 my-2">
+//       <div className="flex-1 h-px" style={{ background: RULE }} />
+//       <span className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: MUTED }}>{label}</span>
+//       <div className="flex-1 h-px" style={{ background: RULE }} />
+//     </div>
+//   )
+// }
+ 
+// // ============================================================
+// // STAT PILL — animated counter
+// // ============================================================
+// function StatPill({ value, label, accent = false }: { value: number; label: string; accent?: boolean }) {
+//   const ref = useRef(null)
+//   const inView = useInView(ref, { once: true })
+//   const [n, setN] = useState(0)
+ 
+//   useEffect(() => {
+//     if (!inView) return
+//     let cur = 0
+//     const step = value / 36
+//     const iv = setInterval(() => {
+//       cur += step
+//       if (cur >= value) { setN(value); clearInterval(iv) }
+//       else setN(Math.floor(cur))
+//     }, 28)
+//     return () => clearInterval(iv)
+//   }, [inView, value])
+ 
+//   return (
+//     <div
+//       ref={ref}
+//       className="flex flex-col items-center justify-center gap-1 px-6 py-5 rounded-2xl"
+//       style={{
+//         background: accent ? VIOLET : PAPER,
+//         border: `1px solid ${accent ? VIOLET : RULE}`,
+//       }}
+//     >
+//       <span
+//         className="text-3xl font-black tabular-nums"
+//         style={{ color: accent ? '#fff' : INK }}
+//       >
+//         {n}+
+//       </span>
+//       <span
+//         className="text-[10px] font-black uppercase tracking-widest"
+//         style={{ color: accent ? 'rgba(255,255,255,0.6)' : MUTED }}
+//       >
+//         {label}
+//       </span>
+//     </div>
+//   )
+// }
+ 
+// // ============================================================
+// // BENTO CARD
+// // ============================================================
+// function BentoCard({ children, className = '', dark = false, span = 1 }: {
+//   children: React.ReactNode; className?: string; dark?: boolean; span?: 1 | 2
+// }) {
+//   return (
+//     <SpotlightCard
+//       dark={dark}
+//       className={`p-7 ${span === 2 ? 'md:col-span-2' : ''} ${className}`}
+//     >
+//       {children}
+//     </SpotlightCard>
+//   )
+// }
+ 
+// // ============================================================
+// // EXPERIENCE ACCORDION
+// // ============================================================
+// function ExperienceAccordion({ exp, index }: { exp: Experience; index: number }) {
+//   const [open, setOpen] = useState(index === 0)
+//   const ref = useRef(null)
+//   const inView = useInView(ref, { once: true, margin: '-40px' })
+ 
+//   return (
+//     <motion.div
+//       ref={ref}
+//       initial={{ opacity: 0, y: 30 }}
+//       animate={inView ? { opacity: 1, y: 0 } : {}}
+//       transition={{ delay: index * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+//       style={{ borderBottom: `1px solid ${RULE}` }}
+//     >
+//       <button
+//         onClick={() => setOpen(!open)}
+//         className="w-full flex items-center justify-between py-6 text-left group"
+//         data-hover
+//       >
+//         <div className="flex items-center gap-6">
+//           {/* Index */}
+//           <span
+//             className="text-xs font-black tabular-nums w-6 shrink-0"
+//             style={{ color: MUTED }}
+//           >
+//             {String(index + 1).padStart(2, '0')}
+//           </span>
+//           <div>
+//             <p className="text-base font-black" style={{ color: INK }}>{exp.role}</p>
+//             <p className="text-sm mt-0.5" style={{ color: VIOLET }}>{exp.company}</p>
+//           </div>
+//         </div>
+//         <div className="flex items-center gap-4 shrink-0 ml-4">
+//           {exp.duration && (
+//             <span className="text-xs font-bold hidden md:block" style={{ color: MUTED }}>{exp.duration}</span>
+//           )}
+//           <motion.div
+//             animate={{ rotate: open ? 45 : 0 }}
+//             transition={{ duration: 0.25 }}
+//             className="w-7 h-7 rounded-full flex items-center justify-center"
+//             style={{ border: `1px solid ${RULE}`, background: open ? INK : 'transparent' }}
+//           >
+//             <span
+//               className="text-sm font-black leading-none"
+//               style={{ color: open ? '#fff' : INK }}
+//             >+</span>
+//           </motion.div>
+//         </div>
+//       </button>
+ 
+//       <AnimatePresence>
+//         {open && (
+//           <motion.div
+//             initial={{ height: 0, opacity: 0 }}
+//             animate={{ height: 'auto', opacity: 1 }}
+//             exit={{ height: 0, opacity: 0 }}
+//             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+//             style={{ overflow: 'hidden' }}
+//           >
+//             <div className="pb-6 pl-12">
+//               {exp.duration && (
+//                 <span
+//                   className="inline-block text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full mb-4 md:hidden"
+//                   style={{ background: CREAM, color: MUTED }}
+//                 >
+//                   {exp.duration}
+//                 </span>
+//               )}
+//               {exp.description && (
+//                 <p className="text-sm leading-relaxed" style={{ color: MUTED, maxWidth: '56ch' }}>
+//                   {exp.description}
+//                 </p>
+//               )}
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </motion.div>
+//   )
+// }
+ 
+// // ============================================================
+// // PROJECT CARD — editorial style
+// // ============================================================
+// function ProjectCard({ project, index }: { project: Project; index: number }) {
+//   const ref = useRef(null)
+//   const inView = useInView(ref, { once: true, margin: '-40px' })
+//   const [hov, setHov] = useState(false)
+ 
+//   return (
+//     <motion.div
+//       ref={ref}
+//       initial={{ opacity: 0, y: 40 }}
+//       animate={inView ? { opacity: 1, y: 0 } : {}}
+//       transition={{ delay: index * 0.09, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+//       onMouseEnter={() => setHov(true)}
+//       onMouseLeave={() => setHov(false)}
+//       className="group"
+//     >
+//       <SpotlightCard className="h-full">
+//         <div className="p-7 flex flex-col h-full">
+//           {/* Top row */}
+//           <div className="flex items-start justify-between mb-6">
+//             {/* Project number */}
+//             <div
+//               className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black"
+//               style={{
+//                 background: hov ? VIOLET : CREAM,
+//                 color: hov ? '#fff' : MUTED,
+//                 transition: 'all 0.25s',
+//               }}
+//             >
+//               {String(index + 1).padStart(2, '0')}
+//             </div>
+//             {/* Links */}
+//             <div className="flex gap-2">
+//               {project.link && (
+//                 <motion.a
+//                   whileHover={{ scale: 1.1 }}
+//                   href={project.link}
+//                   target="_blank"
+//                   className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black"
+//                   style={{
+//                     background: CREAM,
+//                     color: MUTED,
+//                     border: `1px solid ${RULE}`,
+//                   }}
+//                   data-hover
+//                 >
+//                   ↗
+//                 </motion.a>
+//               )}
+//               {project.github && (
+//                 <motion.a
+//                   whileHover={{ scale: 1.1 }}
+//                   href={project.github}
+//                   target="_blank"
+//                   className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black"
+//                   style={{
+//                     background: CREAM,
+//                     color: MUTED,
+//                     border: `1px solid ${RULE}`,
+//                   }}
+//                   data-hover
+//                 >
+//                   ⌥
+//                 </motion.a>
+//               )}
+//             </div>
+//           </div>
+ 
+//           {/* Divider */}
+//           <div className="h-px mb-5" style={{ background: hov ? VIOLET : RULE, transition: 'background 0.3s' }} />
+ 
+//           <h3
+//             className="text-lg font-black mb-3 transition-colors"
+//             style={{ color: hov ? VIOLET : INK, letterSpacing: '-0.01em' }}
+//           >
+//             {project.title}
+//           </h3>
+//           {project.description && (
+//             <p className="text-sm leading-relaxed flex-1" style={{ color: MUTED }}>
+//               {project.description}
+//             </p>
+//           )}
+ 
+//           {/* Bottom arrow */}
+//           <motion.div
+//             animate={{ x: hov ? 4 : 0 }}
+//             className="mt-6 text-xs font-black uppercase tracking-widest flex items-center gap-2"
+//             style={{ color: hov ? VIOLET : MUTED, transition: 'color 0.25s' }}
+//           >
+//             View project <span>→</span>
+//           </motion.div>
+//         </div>
+//       </SpotlightCard>
+//     </motion.div>
+//   )
+// }
+ 
+// // ============================================================
+// // SKILL TAG — clean pill
+// // ============================================================
+// function SkillTag({ skill, index }: { skill: string; index: number }) {
+//   const [hov, setHov] = useState(false)
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0, scale: 0.85 }}
+//       whileInView={{ opacity: 1, scale: 1 }}
+//       viewport={{ once: true }}
+//       transition={{ delay: index * 0.03, type: 'spring', stiffness: 200 }}
+//       onMouseEnter={() => setHov(true)}
+//       onMouseLeave={() => setHov(false)}
+//       className="px-4 py-2 rounded-full text-xs font-black cursor-default select-none"
+//       style={{
+//         background: hov ? INK : PAPER,
+//         color: hov ? '#fff' : INK,
+//         border: `1px solid ${hov ? INK : RULE}`,
+//         letterSpacing: '0.02em',
+//         transition: 'all 0.18s',
+//       }}
+//       data-hover
+//     >
+//       {skill}
+//     </motion.div>
+//   )
+// }
+ 
+// // ============================================================
+// // MAIN TEMPLATE 2 ADVANCED — Architectural Editorial
+// // ============================================================
+// export default function Template2Advanced({
+//   portfolio,
+//   showWatermark = true,
+// }: {
+//   portfolio: Portfolio
+//   showWatermark?: boolean
+// }) {
+//   const { scrollY } = useScroll()
+//   const heroY = useTransform(scrollY, [0, 600], [0, -80])
+//   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.3])
+ 
+//   const firstName = portfolio.name.split(' ')[0]
+//   const lastName = portfolio.name.split(' ').slice(1).join(' ')
+ 
+//   return (
+//     <main
+//       className="min-h-screen overflow-x-hidden"
+//       style={{ background: PAPER, color: INK, fontFamily: "'DM Sans', 'Inter', sans-serif", cursor: 'none' }}
+//     >
+//       {/* Fonts + global styles */}
+//       <style>{`
+//         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=DM+Mono:wght@400;500&display=swap');
+//         * { cursor: none !important; box-sizing: border-box; }
+//         ::-webkit-scrollbar { width: 3px; }
+//         ::-webkit-scrollbar-track { background: ${PAPER}; }
+//         ::-webkit-scrollbar-thumb { background: ${INK}30; border-radius: 2px; }
+//         ::selection { background: ${VIOLET}20; color: ${VIOLET}; }
+//       `}</style>
+ 
+//       <CustomCursor />
+//       <ScrollProgress />
+ 
+//       {/* ── NAV ── */}
+//       <motion.header
+//         initial={{ y: -60, opacity: 0 }}
+//         animate={{ y: 0, opacity: 1 }}
+//         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+//         className="fixed top-0 left-0 right-0 z-50"
+//         style={{ background: `${PAPER}e8`, backdropFilter: 'blur(20px)', borderBottom: `1px solid ${RULE}` }}
+//       >
+//         <div className="max-w-7xl mx-auto px-6 md:px-10 h-14 flex items-center justify-between">
+//           {/* Logo wordmark */}
+//           <div className="flex items-center gap-3">
+//             {portfolio.avatar ? (
+//               <img
+//                 src={portfolio.avatar}
+//                 alt={portfolio.name}
+//                 className="w-8 h-8 rounded-xl object-cover"
+//                 style={{ border: `1px solid ${RULE}` }}
+//               />
+//             ) : (
+//               <div
+//                 className="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black text-white"
+//                 style={{ background: INK }}
+//               >
+//                 {portfolio.name.charAt(0)}
+//               </div>
+//             )}
+//             <span className="font-black text-sm tracking-tight" style={{ color: INK }}>
+//               {firstName}<span style={{ color: MUTED }}>{lastName ? ` ${lastName}` : ''}</span>
+//             </span>
+//           </div>
+ 
+//           {/* Nav links — desktop */}
+//           <nav className="hidden md:flex items-center gap-6 text-xs font-bold" style={{ color: MUTED }}>
+//             {['Skills', 'Experience', 'Projects', 'Education'].map(l => (
+//               <motion.span
+//                 key={l}
+//                 whileHover={{ color: INK }}
+//                 className="transition-colors"
+//                 data-hover
+//               >{l}</motion.span>
+//             ))}
+//           </nav>
+ 
+//           {/* CTA */}
+//           <div className="flex items-center gap-3">
+//             {portfolio.github && (
+//               <MagneticButton
+//                 href={portfolio.github}
+//                 target="_blank"
+//                 className="text-xs font-black px-4 py-2 rounded-xl border transition-all hidden md:block"
+//                 style={{ borderColor: RULE, color: MUTED }}
+//                 data-hover
+//               >
+//                 GitHub ↗
+//               </MagneticButton>
+//             )}
+//             {portfolio.linkedin && (
+//               <MagneticButton
+//                 href={portfolio.linkedin}
+//                 target="_blank"
+//                 className="text-xs font-black px-4 py-2 rounded-xl text-white"
+//                 style={{ background: INK }}
+//                 data-hover
+//               >
+//                 Connect →
+//               </MagneticButton>
+//             )}
+//           </div>
+//         </div>
+//       </motion.header>
+ 
+//       {/* ── HERO ── */}
+//       <section className="relative min-h-screen flex flex-col justify-end overflow-hidden">
+ 
+//         {/* Giant background letter */}
+//         <motion.div
+//           initial={{ opacity: 0, scale: 1.2 }}
+//           animate={{ opacity: 1, scale: 1 }}
+//           transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+//           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+//           style={{ zIndex: 0 }}
+//         >
+//           <span
+//             className="font-black leading-none"
+//             style={{
+//               fontSize: 'clamp(200px, 40vw, 600px)',
+//               color: 'transparent',
+//               WebkitTextStroke: `1px ${INK}08`,
+//               letterSpacing: '-0.05em',
+//             }}
+//           >
+//             {firstName.charAt(0)}
+//           </span>
+//         </motion.div>
+ 
+//         {/* Content */}
+//         <motion.div
+//           style={{ y: heroY, opacity: heroOpacity }}
+//           className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 pt-32 pb-16 w-full"
+//         >
+//           <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-end">
+ 
+//             {/* Left — name + bio */}
+//             <div>
+//               {/* Status */}
+//               <motion.div
+//                 initial={{ opacity: 0, x: -20 }}
+//                 animate={{ opacity: 1, x: 0 }}
+//                 transition={{ delay: 0.2 }}
+//                 className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full text-xs font-black"
+//                 style={{ background: CREAM, border: `1px solid ${RULE}`, color: MUTED }}
+//               >
+//                 <motion.span
+//                   animate={{ opacity: [1, 0.3, 1] }}
+//                   transition={{ duration: 2, repeat: Infinity }}
+//                   className="w-1.5 h-1.5 rounded-full"
+//                   style={{ background: '#22c55e' }}
+//                 />
+//                 Available for opportunities
+//               </motion.div>
+ 
+//               {/* Name — mega display */}
+//               <div className="overflow-hidden mb-6">
+//                 {[firstName, lastName].filter(Boolean).map((word, i) => (
+//                   <div key={i} className="overflow-hidden">
+//                     <motion.h1
+//                       initial={{ y: '110%' }}
+//                       animate={{ y: '0%' }}
+//                       transition={{ delay: 0.3 + i * 0.12, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+//                       className="font-black leading-[0.9] tracking-tight block"
+//                       style={{
+//                         fontSize: 'clamp(3.5rem, 10vw, 8rem)',
+//                         color: i === 0 ? INK : 'transparent',
+//                         WebkitTextStroke: i === 1 ? `2px ${INK}` : 'none',
+//                       }}
+//                     >
+//                       {word}
+//                     </motion.h1>
+//                   </div>
+//                 ))}
+//               </div>
+ 
+//               {/* Bio */}
+//               {portfolio.bio && (
+//                 <motion.p
+//                   initial={{ opacity: 0, y: 20 }}
+//                   animate={{ opacity: 1, y: 0 }}
+//                   transition={{ delay: 0.7 }}
+//                   className="text-base leading-relaxed max-w-lg mb-10"
+//                   style={{ color: MUTED }}
+//                 >
+//                   {portfolio.bio}
+//                 </motion.p>
+//               )}
+ 
+//               {/* CTAs */}
+//               <motion.div
+//                 initial={{ opacity: 0, y: 20 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 0.85 }}
+//                 className="flex gap-3 flex-wrap"
+//               >
+//                 {portfolio.linkedin && (
+//                   <MagneticButton
+//                     href={portfolio.linkedin}
+//                     target="_blank"
+//                     className="px-7 py-3.5 rounded-2xl text-sm font-black text-white relative overflow-hidden group"
+//                     style={{ background: INK }}
+//                   >
+//                     <motion.span
+//                       className="absolute inset-0"
+//                       style={{ background: VIOLET }}
+//                       initial={{ x: '-101%' }}
+//                       whileHover={{ x: '0%' }}
+//                       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+//                     />
+//                     <span className="relative">Connect →</span>
+//                   </MagneticButton>
+//                 )}
+//                 {portfolio.github && (
+//                   <MagneticButton
+//                     href={portfolio.github}
+//                     target="_blank"
+//                     className="px-7 py-3.5 rounded-2xl text-sm font-black border"
+//                     style={{ borderColor: RULE, color: MUTED, background: PAPER }}
+//                   >
+//                     GitHub ↗
+//                   </MagneticButton>
+//                 )}
+//               </motion.div>
+//             </div>
+ 
+//             {/* Right — avatar + stats bento */}
+//             <motion.div
+//               initial={{ opacity: 0, x: 60 }}
+//               animate={{ opacity: 1, x: 0 }}
+//               transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+//               className="flex flex-col gap-4"
+//             >
+//               {/* Avatar */}
+//               {portfolio.avatar ? (
+//                 <div
+//                   className="w-56 h-56 rounded-3xl overflow-hidden"
+//                   style={{ border: `1px solid ${RULE}` }}
+//                 >
+//                   <img src={portfolio.avatar} alt={portfolio.name} className="w-full h-full object-cover" />
+//                 </div>
+//               ) : (
+//                 <div
+//                   className="w-56 h-56 rounded-3xl flex items-center justify-center text-6xl font-black"
+//                   style={{ background: CREAM, border: `1px solid ${RULE}`, color: `${INK}20` }}
+//                 >
+//                   {portfolio.name.charAt(0)}
+//                 </div>
+//               )}
+ 
+//               {/* Mini stat grid */}
+//               <div className="grid grid-cols-3 gap-2">
+//                 <StatPill value={portfolio.skills.length} label="Skills" />
+//                 <StatPill value={portfolio.projects.length} label="Projects" accent />
+//                 <StatPill value={portfolio.experience.length} label="Roles" />
+//               </div>
+//             </motion.div>
+//           </div>
+//         </motion.div>
+ 
+//         {/* Bottom rule */}
+//         <div style={{ borderTop: `1px solid ${RULE}` }}>
+//           {/* Skills marquee */}
+//           {portfolio.skills.length > 0 && (
+//             <motion.div
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
+//               transition={{ delay: 1.1 }}
+//             >
+//               <Marquee items={portfolio.skills} />
+//             </motion.div>
+//           )}
+//         </div>
+//       </section>
+ 
+//       {/* ── CONTENT ── */}
+//       <div className="max-w-7xl mx-auto px-6 md:px-10">
+ 
+//         {/* ── SKILLS BENTO ── */}
+//         {portfolio.skills.length > 0 && (
+//           <section className="py-24" style={{ borderTop: `1px solid ${RULE}` }}>
+//             <Reveal>
+//               <Overline accent>Skills & Technologies</Overline>
+//               <h2 className="font-black text-4xl md:text-5xl mb-12 tracking-tight" style={{ color: INK }}>
+//                 What I work with
+//               </h2>
+//             </Reveal>
+//             <Reveal delay={0.1}>
+//               <div className="flex flex-wrap gap-2">
+//                 {portfolio.skills.map((skill, i) => (
+//                   <SkillTag key={skill} skill={skill} index={i} />
+//                 ))}
+//               </div>
+//             </Reveal>
+//           </section>
+//         )}
+ 
+//         {/* ── EXPERIENCE — accordion ── */}
+//         {portfolio.experience.length > 0 && (
+//           <section className="py-24" style={{ borderTop: `1px solid ${RULE}` }}>
+//             <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-16">
+//               {/* Sticky left label */}
+//               <Reveal>
+//                 <div className="lg:sticky lg:top-24">
+//                   <Overline>Career</Overline>
+//                   <h2 className="font-black text-4xl md:text-5xl tracking-tight mb-4" style={{ color: INK }}>
+//                     Work<br />History
+//                   </h2>
+//                   <p className="text-sm leading-relaxed" style={{ color: MUTED }}>
+//                     {portfolio.experience.length} roles across companies & startups
+//                   </p>
+//                 </div>
+//               </Reveal>
+ 
+//               {/* Accordion */}
+//               <div style={{ borderTop: `1px solid ${RULE}` }}>
+//                 {portfolio.experience.map((exp, i) => (
+//                   <ExperienceAccordion key={exp.id} exp={exp} index={i} />
+//                 ))}
+//               </div>
+//             </div>
+//           </section>
+//         )}
+ 
+//         {/* ── PROJECTS ── */}
+//         {portfolio.projects.length > 0 && (
+//           <section className="py-24" style={{ borderTop: `1px solid ${RULE}` }}>
+//             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+//               <Reveal>
+//                 <Overline accent>Portfolio</Overline>
+//                 <h2 className="font-black text-4xl md:text-5xl tracking-tight" style={{ color: INK }}>
+//                   Featured Projects
+//                 </h2>
+//               </Reveal>
+//               <Reveal delay={0.1}>
+//                 <p className="text-sm font-bold uppercase tracking-widest" style={{ color: MUTED }}>
+//                   {portfolio.projects.length} total →
+//                 </p>
+//               </Reveal>
+//             </div>
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+//               {portfolio.projects.map((project, i) => (
+//                 <ProjectCard key={project.id} project={project} index={i} />
+//               ))}
+//             </div>
+//           </section>
+//         )}
+ 
+//         {/* ── EDUCATION + CERTIFICATIONS ── side by side ── */}
+//         {(portfolio.education.length > 0 || portfolio.certifications.length > 0) && (
+//           <section className="py-24" style={{ borderTop: `1px solid ${RULE}` }}>
+//             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+ 
+//               {/* Education */}
+//               {portfolio.education.length > 0 && (
+//                 <div>
+//                   <Reveal>
+//                     <Overline>Background</Overline>
+//                     <h2 className="font-black text-4xl tracking-tight mb-10" style={{ color: INK }}>Education</h2>
+//                   </Reveal>
+//                   <div className="space-y-4">
+//                     {portfolio.education.map((edu, i) => (
+//                       <Reveal key={edu.id} delay={i * 0.1}>
+//                         <SpotlightCard className="p-6">
+//                           <div className="flex items-start gap-4">
+//                             <div
+//                               className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
+//                               style={{ background: CREAM, border: `1px solid ${RULE}` }}
+//                             >
+//                               🎓
+//                             </div>
+//                             <div>
+//                               <h3 className="font-black text-base" style={{ color: INK }}>{edu.college}</h3>
+//                               <p className="text-sm mt-0.5" style={{ color: MUTED }}>{edu.degree}</p>
+//                               {edu.year && (
+//                                 <span
+//                                   className="inline-block mt-3 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest"
+//                                   style={{ background: CREAM, color: MUTED, border: `1px solid ${RULE}` }}
+//                                 >
+//                                   {edu.year}
+//                                 </span>
+//                               )}
+//                             </div>
+//                           </div>
+//                         </SpotlightCard>
+//                       </Reveal>
+//                     ))}
+//                   </div>
+//                 </div>
+//               )}
+ 
+//               {/* Certifications */}
+//               {portfolio.certifications.length > 0 && (
+//                 <div>
+//                   <Reveal>
+//                     <Overline>Achievements</Overline>
+//                     <h2 className="font-black text-4xl tracking-tight mb-10" style={{ color: INK }}>Certifications</h2>
+//                   </Reveal>
+//                   <div className="space-y-3">
+//                     {portfolio.certifications.map((cert, i) => (
+//                       <Reveal key={cert.id} delay={i * 0.08}>
+//                         <SpotlightCard className="p-5">
+//                           <div className="flex items-center justify-between gap-4">
+//                             <div className="flex items-center gap-4">
+//                               <div
+//                                 className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0"
+//                                 style={{ background: VIOLET, color: '#fff' }}
+//                               >
+//                                 ✦
+//                               </div>
+//                               <div>
+//                                 <p className="font-black text-sm" style={{ color: INK }}>{cert.name}</p>
+//                                 {cert.issuer && (
+//                                   <p className="text-xs mt-0.5" style={{ color: MUTED }}>{cert.issuer}</p>
+//                                 )}
+//                               </div>
+//                             </div>
+//                             {cert.link && (
+//                               <motion.a
+//                                 whileHover={{ x: 3 }}
+//                                 href={cert.link}
+//                                 target="_blank"
+//                                 className="text-xs font-black shrink-0 ml-2"
+//                                 style={{ color: VIOLET }}
+//                                 data-hover
+//                               >
+//                                 View →
+//                               </motion.a>
+//                             )}
+//                           </div>
+//                         </SpotlightCard>
+//                       </Reveal>
+//                     ))}
+//                   </div>
+//                 </div>
+//               )}
+//             </div>
+//           </section>
+//         )}
+ 
+//         {/* ── CONTACT — full-bleed dark panel ── */}
+//         <section className="py-24" style={{ borderTop: `1px solid ${RULE}` }}>
+//           <Reveal>
+//             <div
+//               className="relative overflow-hidden rounded-3xl p-12 md:p-16"
+//               style={{ background: INK }}
+//             >
+//               {/* Texture lines */}
+//               <div
+//                 className="absolute inset-0 pointer-events-none opacity-[0.03]"
+//                 style={{
+//                   backgroundImage: `repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)`,
+//                   backgroundSize: '12px 12px',
+//                 }}
+//               />
+ 
+//               {/* Violet accent orb */}
+//               <div
+//                 className="absolute top-[-80px] right-[-80px] w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none"
+//                 style={{ background: `radial-gradient(circle, ${VIOLET}, transparent)` }}
+//               />
+ 
+//               <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+//                 {/* Left */}
+//                 <div>
+//                   <div className="flex items-center gap-3 mb-6">
+//                     <div className="w-8 h-px" style={{ background: VIOLET }} />
+//                     <p className="text-xs font-black uppercase tracking-[0.25em]" style={{ color: VIOLET }}>
+//                       Contact
+//                     </p>
+//                   </div>
+//                   <h2
+//                     className="font-black leading-tight tracking-tight mb-6"
+//                     style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: '#fff' }}
+//                   >
+//                     Let's build<br />
+//                     <span style={{ color: VIOLET }}>something</span><br />
+//                     great.
+//                   </h2>
+//                   <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)', maxWidth: '36ch' }}>
+//                     Open to exciting engineering roles, collaborations, and hard technical problems.
+//                   </p>
+//                 </div>
+ 
+//                 {/* Right — links */}
+//                 <div className="flex flex-col gap-4">
+//                   {[
+//                     { href: portfolio.linkedin, label: 'Connect on LinkedIn', primary: true },
+//                     { href: portfolio.github, label: 'View GitHub', primary: false },
+//                     { href: portfolio.twitter, label: 'Follow on Twitter', primary: false },
+//                     { href: portfolio.website, label: 'Visit Website', primary: false },
+//                   ].filter(l => l.href).map((l, i) => (
+//                     <MagneticButton
+//                       key={l.label}
+//                       href={l.href!}
+//                       target="_blank"
+//                       className="flex items-center justify-between px-6 py-4 rounded-2xl font-black text-sm w-full group"
+//                       style={{
+//                         background: l.primary ? VIOLET : 'rgba(255,255,255,0.05)',
+//                         border: `1px solid ${l.primary ? VIOLET : 'rgba(255,255,255,0.08)'}`,
+//                         color: l.primary ? '#fff' : 'rgba(255,255,255,0.5)',
+//                       }}
+//                       data-hover
+//                     >
+//                       <span>{l.label}</span>
+//                       <motion.span
+//                         animate={{ x: 0 }}
+//                         whileHover={{ x: 4 }}
+//                         className="font-black"
+//                       >→</motion.span>
+//                     </MagneticButton>
+//                   ))}
+//                 </div>
+//               </div>
+//             </div>
+//           </Reveal>
+//         </section>
+ 
+//       </div>
+ 
+//       {/* ── FOOTER ── */}
+//       <footer style={{ borderTop: `1px solid ${RULE}`, background: CREAM }}>
+//         <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
+//           <div>
+//             <p className="font-black text-sm" style={{ color: INK }}>{portfolio.name}</p>
+//             {portfolio.bio && (
+//               <p className="text-xs mt-0.5" style={{ color: MUTED }}>{portfolio.bio.slice(0, 55)}…</p>
+//             )}
+//           </div>
+ 
+//           <div className="flex items-center gap-6 text-xs font-bold" style={{ color: MUTED }}>
+//             {portfolio.github && <a href={portfolio.github} target="_blank" className="hover:opacity-70 transition-opacity" data-hover>GitHub</a>}
+//             {portfolio.linkedin && <a href={portfolio.linkedin} target="_blank" className="hover:opacity-70 transition-opacity" data-hover>LinkedIn</a>}
+//             {portfolio.twitter && <a href={portfolio.twitter} target="_blank" className="hover:opacity-70 transition-opacity" data-hover>Twitter</a>}
+//           </div>
+ 
+//           <p className="text-xs" style={{ color: `${MUTED}80` }}>
+//             {showWatermark ? (
+//               <span>
+//                 Built with{' '}
+//                 <a href="https://portfolio-saas-red.vercel.app" className="underline hover:opacity-70" data-hover>Portfolio SaaS</a>
+//                 {' · '}
+//                 <a href="https://portfolio-saas-red.vercel.app/pricing" className="underline hover:opacity-70" data-hover>Remove watermark</a>
+//               </span>
+//             ) : (
+//               <span>Built with Portfolio SaaS</span>
+//             )}
+//           </p>
+//         </div>
+//       </footer>
+//     </main>
+//   )
+// }
